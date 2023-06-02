@@ -10,9 +10,12 @@
 - lint를 적용해주세요.
 - print를 logging library로 변경해주시고, 좋은 포멧터를 적용한 뒤, 파일에도 로그가 남게 해주세요.
 - packet protocol을 json 혹은 protobuf로 변경해주세요.
-- recv / send 
+- recv / send를 포함하여 리팩토링을 진행하고, 불안정한 코드를 튼튼하게 수정해주세요. (hint: command pattern 적용 등)
+    - https://github.com/dudaji/dudaji-chat-exam/blob/main/client.py#L17
+    - https://github.com/dudaji/dudaji-chat-exam/blob/main/server.py#L44
+    - https://github.com/dudaji/dudaji-chat-exam/blob/main/server.py#L12
+
 - 각종 매직넘버를 config를 통해서 관리하도록 해주세요.
-- recv 함수에 command pattern을 적용하여 패킷 타입별로 핸들링 할 수 있게 해주세요.
 - README.md파일에 Quick start 문서를 작성해주세요.
 - 기타 개선하고 싶은 부분을 자유롭게 개선해주세요.
 
