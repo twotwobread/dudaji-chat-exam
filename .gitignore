@@ -155,4 +155,7 @@ pip-selfcheck.json
 .history
 .ionide
 
+# log파일 관련
+logs
+config/__pycache__
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,venv
