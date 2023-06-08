@@ -1,40 +1,41 @@
 import socket
 from _thread import start_new_thread
 
+from config import logger_config
+
 client_sockets = []
+logger = logger_config.getLogger()
 
 
 def threaded(client_socket, addr, NAME):
     entering_message = f"{NAME}:{addr}님이 접속하였습니다."
-    print(entering_message)
+    logger.info(entering_message)
 
     while True:
         try:
             data = client_socket.recv(1024)  # 1024byte
             if not data:
-                print(f"{NAME}님이 나갔습니다.")
+                logger.info("%s님이 나갔습니다.", NAME)
                 break
-            print(f"{NAME} [{addr[0]}:{addr[1]}] {repr(data.decode())}")
+            logger.info("%s [%s:%s] {%s}", NAME, addr[0], addr[1], repr(data.decode()))
             for client in client_sockets:
                 if client != client_socket:
                     message = f"{NAME}: {repr(data.decode())}"
                     client.send(message.encode())
 
-        except Exception as e:
-            print(e)
-            print(f"{NAME}님이 나갔습니다.")
+        except Exception:
             break
 
     if client_socket in client_sockets:
         client_sockets.remove(client_socket)
-        print("Rest Clients : ", len(client_sockets))
+        logger.info("Rest Clients : %s", len(client_sockets))
     client_socket.close()
 
 
 HOST = "127.0.0.1"
 PORT = 9999
 
-print(">> Server Start")
+logger.info(">> Server Start")
 server_socket = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM
 )  # AF_INET: IP Version 4, SOCK_STREAM: TCP 패킷 허용. row/"stream"/데이터그램 socket
@@ -44,14 +45,15 @@ server_socket.listen()  # 클라이언트를 기다림. 인수로는 동시 접�
 
 try:
     while True:
-        print(">> Wait")
+        logger.info(">> Wait")
         client_socket, addr = server_socket.accept()
         NAME = client_socket.recv(1024)
         NAME = repr(NAME.decode())
         client_sockets.append(client_socket)
         start_new_thread(threaded, (client_socket, addr, NAME))
-        print("참가자 수 : ", len(client_sockets))
+        logger.info("참가자 수 : %s", len(client_sockets))
 except Exception as e:
-    print("에러는? : ", e)
+    logger.error("에러발생 : %s", e)
 finally:
     server_socket.close()
+    logger.close()
