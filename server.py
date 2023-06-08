@@ -1,3 +1,4 @@
+import json
 import socket
 from _thread import start_new_thread
 
@@ -14,15 +15,15 @@ def threaded(client_socket, addr, NAME):
 
     while True:
         try:
-            data = client_socket.recv(1024)  # 1024byte
+            data = client_socket.recv(1024).decode()  # 1024byte
             if not data:
                 logger.info("%s님이 나갔습니다.", NAME)
                 break
-            logger.info("%s [%s:%s] {%s}", NAME, addr[0], addr[1], repr(data.decode()))
+            logger.info("%s [%s:%s] %s", NAME, addr[0], addr[1], json.loads(data))
+            boroadcast = json.dumps(data).encode()
             for client in client_sockets:
                 if client != client_socket:
-                    message = f"{NAME}: {repr(data.decode())}"
-                    client.send(message.encode())
+                    client.send(boroadcast)
 
         except Exception:
             break
@@ -45,8 +46,7 @@ try:
     while True:
         logger.info(">> Wait")
         client_socket, addr = server_socket.accept()
-        NAME = client_socket.recv(BUFFER_SIZE)
-        NAME = repr(NAME.decode())
+        NAME = json.loads(client_socket.recv(BUFFER_SIZE).decode())["name"]
         client_sockets.append(client_socket)
         start_new_thread(threaded, (client_socket, addr, NAME))
         logger.info("참가자 수 : %s", len(client_sockets))
