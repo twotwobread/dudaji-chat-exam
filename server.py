@@ -1,10 +1,11 @@
 import socket
 from _thread import start_new_thread
 
-from config import logger_config
+from config.connect_config import BUFFER_SIZE, HOST, PORT
+from config.logger_config import getLogger
 
 client_sockets = []
-logger = logger_config.getLogger()
+logger = getLogger()
 
 
 def threaded(client_socket, addr, NAME):
@@ -32,9 +33,6 @@ def threaded(client_socket, addr, NAME):
     client_socket.close()
 
 
-HOST = "127.0.0.1"
-PORT = 9999
-
 logger.info(">> Server Start")
 server_socket = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM
@@ -47,7 +45,7 @@ try:
     while True:
         logger.info(">> Wait")
         client_socket, addr = server_socket.accept()
-        NAME = client_socket.recv(1024)
+        NAME = client_socket.recv(BUFFER_SIZE)
         NAME = repr(NAME.decode())
         client_sockets.append(client_socket)
         start_new_thread(threaded, (client_socket, addr, NAME))
