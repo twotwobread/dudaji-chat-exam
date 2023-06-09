@@ -4,7 +4,7 @@ import logging.handlers
 import os
 
 LOG_FORMAT = "[%(asctime)-15s] <thread_id : %(thread)d> (%(filename)s:%(lineno)d) %(name)s:%(levelname)s - %(message)s"
-LOG_FILE_PATH = "{}/logs".format(os.path.dirname(os.path.realpath(__file__)) + "/..")
+LOG_FILE_PATH = "{}/logs".format(os.path.dirname(os.path.realpath(__file__)) + "/../..")
 
 if not os.path.exists(LOG_FILE_PATH):
     os.makedirs(LOG_FILE_PATH)
